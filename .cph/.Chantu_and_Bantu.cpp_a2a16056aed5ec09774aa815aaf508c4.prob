@@ -1,0 +1,1 @@
+{"name":"Local: Chantu_and_Bantu","url":"d:\\C++\\Chantu_and_Bantu.cpp","tests":[{"id":1648723582219,"input":"2\n3\n8\n50 70 30 100 80 20 150 10\n4\n6\n10 20 32 412 500 11","output":"60\n73"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\C++\\Chantu_and_Bantu.cpp","group":"local","local":true}
