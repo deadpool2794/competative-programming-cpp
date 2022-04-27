@@ -20,12 +20,12 @@ int main()
 
     int t = 1;
     // cin >> t;
-    int a[] = {1, 2, 2, 2, 3, 3, 3, 4, 5, 6, 6, 6, 4};
-    // vi v(a, a+13);
-    // for(auto i : v) println(i);
-    int A = 5;
-    while (A--)
-        prints(cin >> A);
-    
+    while (true)
+    {
+        int a, b, c, d;
+        cin >> a >> b >> c >> d;
+        if (a == 0 && b == 0 && c == 0 && d == 0) break;
+        
+    }
     return 0;
 }

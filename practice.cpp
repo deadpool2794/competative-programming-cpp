@@ -92,11 +92,16 @@ int main()
     // int result = (*p + 2) * a[4][1] + (++*p) + (*p + 7);
     // cout << result;
 
-    string s = "AlIm";
-    for(auto i : s){
-        cout<<char(i^' ');
+    // string s = "alim";
+    // for(auto i : s){
+    //     cout<<char(i^' ');
+    // }
+
+    
+        char *p = "xy";
+        char *q = "xy246";
+        while (*p = *q)
+            printf("%c %c", *p, *q);
+
+        return 0;
     }
-
-
-    return 0;
-}

@@ -1,0 +1,263 @@
+
+<!-- saved from url=(0054)http://faculty.cs.niu.edu/~hutchins/csci241/output.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Formatting Output in C++</title>
+<script src="chrome-extension://mooikfkahbdckldjjndioackbalphokd/assets/prompt.js"></script></head>
+
+<body>
+
+<p></p><center><h1><b>Formatting Output in C++</b></h1></center>
+
+<p>Output in C++ can be fairly simple.
+
+</p><p>We have <u>cout</u>, which is "standard output", actually a
+   predefined instance of the <u>ostream</u> class.
+
+</p><p>To write output to cout, we use the <u>insertion operator</u>
+   <u>&lt;&lt;</u>.  The name refers to "inserting values into the
+   output stream".
+
+</p><p>If we have variables such as
+
+</p><pre>     int M = 13;
+     float G = 5.91;
+     char X = 'P';</pre>
+
+<p>we can simply write
+
+</p><pre>     cout &lt;&lt; M;</pre>
+
+<p>and the value of M is printed.  We could string several of these
+   together and include strings:
+
+</p><pre>     cout &lt;&lt; "M = " &lt;&lt; M &lt;&lt; " and " G = " &lt;&lt; G;</pre>
+
+<p>In each case, the value of the string or variable is printed using a
+   default format.  What if we want to change this and print values in
+   other formats?
+
+</p><p>C++ provides a family of format specifiers we can use.
+
+</p><p></p><hr>
+
+<p><b>A few specifiers useful in general</b>
+
+</p><ul>
+ <li><u>endl</u>
+     <p>This the end-of-line marker, like "\n" in the C language.  It
+        advances to the begining of the next line.  It also flushes
+        the output buffer; that is, it makes sure anything waiting to
+        be printed is printed before finishing the current line.
+     </p><p>
+ </p></li><li><u>flush</u>
+     <p>This simply flushes the output buffer.
+     </p><p>
+ </p></li><li><u>setw(n)</u>
+     <p>This sets the <i>field width</i>.  That is, if we have a
+        value to print, we can use setw to dictate the minimum number
+        of positions to use.  If the value is too big to fit, more
+        positions will be used.
+     </p><p>This affects only the next value to be printed.  It has no
+        lingering effect.
+     </p><p>Without setw, values are normally printed using however many
+        positions are needed.
+     </p><p>By default, values are right-justified in the space provided.
+       We can change this.
+     </p><p>
+ </p></li><li><u>left</u>
+     <p>When we use setw, we can use this to force values to be
+        printed left-justified in the space provided.  This stays
+        in effect until we change it.
+     </p><p>
+ </p></li><li><u>right</u>
+     <p>When we use setw, we can use this to force values to be
+        printed right-justified in the space provided.  This stays
+        in effect until we change it.
+     </p><p>This is the default, but we may need it to undo the
+        effect of left.
+     </p><p>
+ </p></li><li><u>setfill(c)</u>
+     <p>This sets the value of the <i>fill character</i>.  The default
+        value is a blank.
+     </p><p>For instance, if we have an int variable J with the value 23,
+        we might want to print it using exactly 6 spaces.  In that case,
+        we would have several copies of the fill character before
+        printing the 23.
+</p></li></ul>
+
+<p></p><hr>
+
+<p><b>Formats for number in general</b>
+
+</p><ul>
+ <li><u>showpos</u>
+     <p>When printing a nonnegative integer value, indicate the
+        sign with a prefix '+'.
+     </p><p>For negative integer values, we always have a leading '-'
+        to indicate the sign.
+     </p><p>
+ </p></li><li><u>noshowpos</u>
+     <p>This switches off the effect of showpos. 
+     </p><p>This is the default, but we might need it to undo the effect
+        of showpos.
+     </p><p>
+ </p></li><li><u>uppercase</u>
+     <p>When printing number in base 16 (the hex option) or in
+        scientific notation, use upper-case letters.  Thus we might
+        print "4.73E12" instead of "4.73e12" and "X659" instead of
+        "x659".
+     </p><p>
+ </p></li><li><u>nouppercase</u>
+     <p>This switches off the effect of uppercase. 
+     </p><p>This is the default, but we might need it to undo the effect
+        of uppercase.
+</p></li></ul>
+
+<p></p><hr>
+
+<p><b>Formats for integers</b>
+
+</p><ul>
+ <li><u>oct</u>
+     <p>This causes integer values to be printed in base 8.  This
+        stays in effect until we change it.
+     </p><p>
+ </p></li><li><u>hex</u>
+     <p>This causes integer values to be printed in base 16.  This
+        stays in effect until we change it.
+     </p><p>
+ </p></li><li><u>dec</u>
+     <p>This causes integer values to be printed in base 10.  This
+        stays in effect until we change it.
+     </p><p>This is the default, but we might need it to undo the effect
+        of hex or oct.
+     </p><p>
+ </p></li><li><u>showbase</u>
+     <p>When printing an integer value, indicate the base used (8,
+        10 or 16.
+     </p><p>Base 8 is indicated by a prefix '0', as in 0123, and base 16
+        is indicated by a prefix by 'x', as in x123.
+     </p><p>This stays in effect until we change it.
+     </p><p>
+ </p></li><li><u>noshowbase</u>
+     <p>This switches off the effect of showbase. 
+     </p><p>This is the default, but we might need it to undo the effect
+        of showbase.
+</p></li></ul>
+
+<p></p><hr>
+
+<p><b>Formats for floating-point numbers</b>
+
+</p><ul>
+ <li><u>scientific</u>
+     <p>When printing a floating-point value, use scientific notation
+        such as "1.23e4".  (This indicates the value 1.23 times 10 to
+        the 4th power.)
+     </p><p>
+ </p></li><li><u>fixed</u>
+     <p>When printing a floating-point value, use fixed-point notation
+        such as "12300.0'.
+     </p><p>This is often used together with showpoint and setprecision.
+     </p><p>
+ </p></li><li><u>showpoint</u>
+     <p>When printing a floating-point value that has no digits to
+        be printed to the right of the decimal point, go ahead and
+        print the decimal point anyway.
+     </p><p>This is usually used together with fixed and setprecision.
+     </p><p>                                                         
+ </p></li><li><u>noshowpoint</u>
+     <p>This switches off the effect of showpoint.
+     </p><p>This is the default, but we might need it to undo the effect
+        of showpoint.
+     </p><p>                                                         
+ </p></li><li><u>setprecision</u>
+     <p>This controls the number of digits to be written to the
+        right of the decial points.  Thus setprecision(2) means
+        that we want 2 digits printed to the right of the decimal point.
+     </p><p>The default value is typically 6.
+     </p><p>This is usually used together with fixed and showpoint.
+     </p><p>
+ </p></li><li><u>internal</u>
+     <p>When printing a floating-point number using setw, use "internal
+        justification":  the first character is '+' or '-', followed
+        possibly by fill characters, followed by the rest of the value
+        right-justified.
+</p></li></ul>
+
+<p>Note about fixed vs. scientific:  The default is neither of these.
+   If you don't indicate your choice, C++ will choose a format for you.
+
+</p><p></p><hr>
+
+<p><b>Formats for bool values</b>
+
+</p><ul>
+ <li><u>boolalpha</u>
+     <p>When printing a bool value, spell out the word 'true'
+        or 'false'.
+     </p><p>
+ </p></li><li><u>noboolalpha</u>
+     <p>When printing a bool value, print an integer 1 for 'true'
+        or 0 for 'false'.
+     </p><p>This is the default (which seems odd), but we might need it
+        to undo the effect of boolalpha.
+</p></li></ul>
+
+<p></p><hr>
+
+<p><b>What is needed to make use of these?</b>
+
+</p><p>The specifiers which are simply flags, such as hex, oct, dec, left, right,
+   etc. are in the <i>iostream</i> library.
+
+</p><p>The specifiers which are functions, that is, which take arguments, such
+   as setw, setprecision, setfill, etc. are in the <i>iomanip</i> library.
+
+</p><p>This is why we commonly have two #include statements for these libraries
+   in our programs:
+
+</p><pre>     #include &lt;iostream&gt;
+     #include &lt;iomanip&gt;</pre>
+
+<p>For each of these names, we wil also need a <i>using</i> statement,
+   as in
+
+</p><pre>     using std::cout;</pre>
+
+<p></p><hr>
+
+<p><b>Alternate notation</b>
+
+</p><p>Although the specifiers listed above are normally used with cout,
+   it is also possible to set any of these with actual function calls,
+   as in:
+
+</p><pre>    cout.setf(ios_base::oct, ios_base::basefield);
+
+     cout.setf(ios_base::scientific, ios_base::floatfield);
+
+     cout.precision(4);
+
+     cout.width(7);
+
+     cout.setf(ios_base::left, ios_base::adjustfield);
+
+     cout.fill('?');
+
+     cout.flush();</pre>
+
+<p>Here:
+
+</p><ul>
+ <li>"adjustfield" refers to flags related to field adjustment
+     <p>
+ </p></li><li>"basefield" refers to flags related to the integer base
+     <p>
+ </p></li><li>"floatfield" refers to flags related to floating-point output
+</li></ul>
+
+
+
+
+</body></html>

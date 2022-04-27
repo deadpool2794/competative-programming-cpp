@@ -1,0 +1,1 @@
+{"name":"Local: playlist","url":"d:\\C++\\playlist.cpp","tests":[{"id":1650090290699,"input":"5 4 1","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\C++\\playlist.cpp","group":"local","local":true}

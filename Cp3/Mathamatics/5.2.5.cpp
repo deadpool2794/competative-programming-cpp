@@ -7,11 +7,17 @@ typedef long long ll;
 typedef pair<int, int> ii;
 typedef vector<ii> vii;
 typedef vector<int> vi;
+typedef vector<char> vc;
 #define M 1000000007
-#define print(x) cout << x
-#define prints(x) cout << x << " "
+#define print(x) cout << (x)
+#define prints(x) cout << (x) << " "
 #define ALL(x) x.begin(), x.end()
-#define println(x) cout << x << "\n"
+#define println(x) cout << (x) << "\n"
+
+ll getSummation(int a, int n)
+{
+    return (((pow(a, n + 1) * (a * n - n - 1)) + a) / ((a - 1) * (a - 1)));
+}
 
 int main()
 {
@@ -20,12 +26,11 @@ int main()
 
     int t = 1;
     // cin >> t;
-    int a[] = {1, 2, 2, 2, 3, 3, 3, 4, 5, 6, 6, 6, 4};
-    // vi v(a, a+13);
-    // for(auto i : v) println(i);
-    int A = 5;
-    while (A--)
-        prints(cin >> A);
-    
+    while (t--)
+    {
+        int n, a;
+        cin>> a >> n;
+        println(getSummation(a, n));
+    }
     return 0;
 }
