@@ -1,19 +1,3 @@
-// #include <bits/stdc++.h>
-// using namespace std;
-// int main()
-// {
-//     int n;
-//     cin >> n;
-//     for (long long i = 1; i <= n; i++)
-//     {
-//         long long k = i * i * (i * i - 1) / 2;
-//         long long r = 4 * (i - 1) * (i - 2);
-//         long long b = k - r;
-//         cout << b << "\n";
-//     }
-// }
-
-
 // Edhi okasaari Moyya anamma
 // Velli aadukomma
 #include <bits/stdc++.h>
@@ -30,19 +14,29 @@ typedef vector<char> vc;
 #define ALL(x) x.begin(), x.end()
 #define println(x) cout << (x) << "\n"
 
-void solve(){
-    
+bool isPrime(int num){
+    if(num == 2) return true;
+    if(num % 2 == 0 || num == 1) return false;
+    for (int i = 3; i*i < num+1; i+=2){
+        if(num%i == 0) return false;
+    }
+    return true;
 }
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
 
-    int t = 1;
-    //cin >> t;
-    while(t--){
-        solve();
-        
-    }
+    cout << boolalpha ;
+
+    // int t = 1;
+    // cin >> t;
+    // while(t--){
+    //     int n;
+    //     cin >> n;
+    //     println(isPrime(n));    
+    // }
+    for(int i = 1; i < 50; ++i){
+        if(isPrime(i))println(i);    }
     return 0;
 }

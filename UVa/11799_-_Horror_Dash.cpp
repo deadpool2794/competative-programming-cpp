@@ -1,19 +1,3 @@
-// #include <bits/stdc++.h>
-// using namespace std;
-// int main()
-// {
-//     int n;
-//     cin >> n;
-//     for (long long i = 1; i <= n; i++)
-//     {
-//         long long k = i * i * (i * i - 1) / 2;
-//         long long r = 4 * (i - 1) * (i - 2);
-//         long long b = k - r;
-//         cout << b << "\n";
-//     }
-// }
-
-
 // Edhi okasaari Moyya anamma
 // Velli aadukomma
 #include <bits/stdc++.h>
@@ -30,19 +14,24 @@ typedef vector<char> vc;
 #define ALL(x) x.begin(), x.end()
 #define println(x) cout << (x) << "\n"
 
-void solve(){
-    
-}
-
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
 
-    int t = 1;
-    //cin >> t;
+    cout << boolalpha ;
+
+    int t = 1, ct = 1;
+    cin >> t;
     while(t--){
-        solve();
-        
+        int a = 0, len;
+        cin >> len;
+        for(int i = 0; i < len; ++i){
+            int speed;
+            cin >> speed;
+            a = max(a, speed);
+        }
+        cout << "Case " << ct++ << ": " << a << "\n";
+
     }
     return 0;
 }

@@ -1,1 +1,1 @@
-{"name":"Local: kumilesh","url":"d:\\C++\\kumilesh.cpp","tests":[{"id":1648034168861,"input":"216","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\C++\\kumilesh.cpp","group":"local","local":true}
+{"name":"Local: kumilesh","url":"d:\\C++\\kumilesh.cpp","tests":[{"id":1648034168861,"input":"1 3\n3 1 2 6","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\C++\\kumilesh.cpp","group":"local","local":true}
