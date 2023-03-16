@@ -68,8 +68,21 @@ struct node{
     node *left = NULL, *right = NULL;
 };
 const int N = 1e5+10;
-int n;
+int n, k, i;
 string s, cur;
+vector<string> vs;
+
+node* root(int ind){
+    if(ind == k) return;
+    node* root;
+    if(vs[ind] == "int"){
+        root->val = 1;
+    }else{
+        root->val = 2;
+        construct(ind+1)
+    }
+    return root;
+}
 
 void solve(){
     cin >> n;
@@ -77,17 +90,16 @@ void solve(){
     getline(cin, s);
 
     // println(s);
-    s += ' ';
-    int k = s.size(), i = 0;
-    vector<string> vs;
+    k = s.size();
+    s += ' '; 
     while(i < k){
         if(s[i] == ' ')vs.pb(cur), cur = "";
         else cur += s[i];  
         i++;
     }
-    
+    k = vs.size();
 
-    _print(vs);
+    node* root = construct(0);
 
 }
 
