@@ -77,19 +77,16 @@ void f(int ind, string& s, string cur){
 }
 
 void solve(){
-    cin >> n >> s;
-    string cur;
-    f(0, s, cur);
-    for(auto str : st){
-        int arr[n]{0};
-        REP(i, 0, n/2) arr[str[i]-'a'] = 1;
-        REP(i, 0, n/2) cout << str[i] << "* "[i == n/2- 1];
-        prints("==");
-        string add;
-        REP(i, 0, n) if(!arr[i]) add.pb(i+'a');
-        REP(i, 0, n/2) cout << add[i] << "+\n"[i == n/2- 1];
-        prints("&&");
-
+    cin >> n;
+    int arr[n];
+    REP(i, 0, n) cin >> arr[i];
+    
+    REP(i, 0, n){
+        println(n);
+        REP(j, i, i+n){
+            prints(arr[j%n]);
+        }
+        println("");
     }
 }
 

@@ -86,14 +86,14 @@ void solve(){
     // ans = 0;
     // REP(i, 0, 2*n) ans += abs(arr[i]);
     // println(ans);
-    REP(a, -10, 11)
-    REP(b, -10, 11)
-    REP(c, -10, 11)
-    REP(d, -10, 11)
-    REP(e, -10, 11)
-    REP(f, -10, 11)
-    REP(g, -10, 11)
-    REP(h, -10, 11){
+    REP(a, -3, 4)
+    REP(b, -3, 4)
+    REP(c, -3, 4)
+    REP(d, -3, 4)
+    REP(e, -3, 4)
+    REP(f, -3, 4)
+    REP(g, -3, 4)
+    REP(h, -3, 4){
         if(a*b*c*d == e+f+g+h
             && a*b*c*e == d+f+g+h
             && a*b*c*f == d+e+g+h
