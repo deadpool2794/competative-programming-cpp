@@ -5,7 +5,7 @@ using namespace std;
 // #include <ext/pb_ds/tree_policy.hpp>
 // using namespace __gnu_pbds;
 
-#define int long long
+// #define int long long
 #define F first
 #define S second
 #define pb push_back
@@ -25,7 +25,7 @@ typedef vector<pii> vii;
 typedef vector<char> vc;
 typedef vector<vi> vvi;
 
-const int inf = 1LL<<62;
+// const int inf = 1LL<<62;
 const int M1 = 1000000007;
 const int M2 = 998244353;
 const ld EPS = 1e-6;
@@ -70,23 +70,42 @@ void __f (const char* names, Arg1&& arg1, Args&&... args){
     cerr.write (names, comma - names) << " : " << arg1 << " | "; __f (comma + 1, args...);
 } 
 
-//*********************************************************************************//
-
 struct item{
     // elements in node
+    int cnt;
+    vi arr;
+    item(){
+        arr.resize(41, 0);
+        cnt = 0;
+    }
 };
 
 struct SegmentTree{
     int sz;
     vector<item> tree;
-    item N = // Neutral Element;
-    
-    item node(){
-        // structure of a node in tree
+    int left(int x){
+        return 2*x+1;
+    }
+
+    int right(int x){
+        return 2*x+2;
+    }
+
+    item N; // Neutral Element;    
+
+    item node(int val){
+        item newnode;
+        newnode.cnt = 1;
+        newnode.arr[val] = 1;
+        return newnode;
     }
 
     item combineSegments(item a, item b){
         // criteria to combine segments 
+        item newnode;
+        REP(i, 0, 41) newnode.arr[i] = a.arr[i] + b.arr[i], newnode.cnt += (newnode.arr[i] > 0);
+        return newnode;
+        
     }
 
     SegmentTree(int* arr, int n){
@@ -98,7 +117,7 @@ struct SegmentTree{
 
     void build(int x, int lx, int rx, int* arr, int n){
         if(rx-lx == 1){
-            if(lx < n) tree[x] = node(); /*-----------*/
+            if(lx < n) tree[x] = node(arr[lx]); /*-----------*/
             return;
         }
         int m = (lx + rx)/2;
@@ -111,7 +130,11 @@ struct SegmentTree{
 
     void set(int x, int lx, int rx, int val, int ind){
         if(rx-lx == 1){
-            tree[x] = node(val); /*-----------*/
+            REP(i, 0, 41) if(tree[x].arr[i]){
+                    tree[x].arr[i] = 0;
+                    break;
+                }
+                tree[x].arr[val] = 1; 
             return;
         }
         int m = (lx + rx)/2;
@@ -137,15 +160,33 @@ struct SegmentTree{
         return calc(0, 0, sz, l, r);
     }
 
+    bool lineBreak(int i){
+        return __builtin_popcountll(i+2) == 1;
+    }
+
+    void print(){
+        REP(i, 0, 2*sz-1) cerr << tree[i].cnt << " \n"[lineBreak(i)];
+    }
+
 };
 
-//*********************************************************************************//
-
-
 void solve(){
-    int n, v; cin >> n;
+    int n, m; cin >> n >> m;
     int arr[n]; REP(x, 0, n) cin >> arr[x];
     SegmentTree st(arr, n);
+    int ch, a, b;
+    REP(i, 0, m){
+        cin >> ch >> a >> b;
+        if(ch == 1){
+            item cur = st.calc(a-1, b);
+            println(st.calc(a-1, b).cnt);
+            // bug(cur.cnt);
+            // REP(i, 0, 41) bug(i, cur.arr[i]);
+            // cerr << "=======================\n\n";
+            // st.print();
+        }
+        else st.set(b, a-1);
+    }
 
     
 }

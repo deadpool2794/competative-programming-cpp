@@ -50,10 +50,17 @@ void __print(const pair<T, V> &x) {cerr << '{'; __print(x.first); cerr << ", "; 
 template<typename T>
 void __print(const T &x) {int f = 0; cerr << '{'; for (auto &i: x) cerr << (f++ ? ", " : ""), __print(i); cerr << '}';}
 void _print() {cerr << "]\n";}
+void _print(int* a, int n){REP(x, 0, n) cerr << a[x] << " \n"[x==n-1];}
 template <typename T, typename... V>
 void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v...);}
+void no(){println("NO");}
+void yes(){println("YES");}
 int gcd(int a, int b){return (b == 0) ? a : gcd(b, a%b); }
 int lcm(int a, int b){return a * (b/gcd(a,b)); }
+int sum(vi &a){int sm = 0;for(int i : a) sm += i;return sm;}
+ld average(vi &a){ld avg = sum(a);return avg/a.size();}
+int sum(int* a, int n){int sm = 0;REP(i, 0, n) sm += a[i];return sm;}
+ld average(int* a, int n){ld avg = sum(a, n);return avg/n;}
 
 template <typename Arg1>
 void __f (const char* name, Arg1&& arg1) { cerr << name << " : " << arg1 << '\n'; }
@@ -62,39 +69,39 @@ void __f (const char* names, Arg1&& arg1, Args&&... args){
     const char* comma = strchr (names + 1, ',');
     cerr.write (names, comma - names) << " : " << arg1 << " | "; __f (comma + 1, args...);
 } 
+const int N = 1e5+10;
+int arr[N], n;
+
+int f(int m){
+    int res = 0;
+    REP(i, 0, n-1){
+        int a = arr[i], b = arr[i+1];
+        a = (a == -1 ? m : a);
+        b = (b == -1 ? m : b);
+        res = max(res, abs(a-b));
+    }
+    return res;
+}
 
 void solve(){
-    string s;
-    int n, k, ans = 0;
-    cin >> n >> k >> s;
-    bool check[n]{0};
-    REP(i, 0, k){
-        if(!check[i]){
-            map<char,int> mp;
-            int mx = 0, cnt = 0; 
-            for(int j = i; j < n; j+=k){
-                // bug(j, s[j]);
-                mp[s[j]]++;
-                mx = max(mx, mp[s[j]]);
-                cnt++; check[j] = 1;
-            }
-            // bug(i, n-i-1);
-            if(!check[n-i-1]){
-                for(int j = n-i-1; j >= 0; j-= k){
-                    // bug(j, s[j]);
-                    mp[s[j]]++;
-                    mx = max(mx, mp[s[j]]);
-                    cnt++;check[j] = 1;
-                }
-            }
-            ans += cnt - mx;
-            // break;
+    cin >> n;
+    REP(x, 0, n) cin >> arr[x];
 
-        }
+    // REP(i, 0, 10) bug(i, f(i));
 
+
+    int l = 0, h = 1e9;
+    while(h-l > 2){
+        int m1 = l+(h-l)/3, m2 = h-(h-l)/3;
+        if(f(m1) > f(m2)) l = m1;
+        else h = m2;
     }
-    
-    println(ans);
+
+    int a = f(l), b = f(l+1), c = f(l+2);
+    if(a <= b && a <= c) cout << a << " " << l << "\n";
+    else if(b <= a && b <= c) cout << b << " " << l+1 << "\n";
+    else cout << c << " " << l+2 << "\n";
+
 }
 
 int32_t main()

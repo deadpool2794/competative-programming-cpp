@@ -50,10 +50,17 @@ void __print(const pair<T, V> &x) {cerr << '{'; __print(x.first); cerr << ", "; 
 template<typename T>
 void __print(const T &x) {int f = 0; cerr << '{'; for (auto &i: x) cerr << (f++ ? ", " : ""), __print(i); cerr << '}';}
 void _print() {cerr << "]\n";}
+void _print(int* a, int n){REP(x, 0, n) cerr << a[x] << " \n"[x==n-1];}
 template <typename T, typename... V>
 void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v...);}
+void no(){println("NO");}
+void yes(){println("YES");}
 int gcd(int a, int b){return (b == 0) ? a : gcd(b, a%b); }
 int lcm(int a, int b){return a * (b/gcd(a,b)); }
+int sum(vi &a){int sm = 0;for(int i : a) sm += i;return sm;}
+ld average(vi &a){ld avg = sum(a);return avg/a.size();}
+int sum(int* a, int n){int sm = 0;REP(i, 0, n) sm += a[i];return sm;}
+ld average(int* a, int n){ld avg = sum(a, n);return avg/n;}
 
 template <typename Arg1>
 void __f (const char* name, Arg1&& arg1) { cerr << name << " : " << arg1 << '\n'; }
@@ -63,38 +70,87 @@ void __f (const char* names, Arg1&& arg1, Args&&... args){
     cerr.write (names, comma - names) << " : " << arg1 << " | "; __f (comma + 1, args...);
 } 
 
-void solve(){
-    string s;
-    int n, k, ans = 0;
-    cin >> n >> k >> s;
-    bool check[n]{0};
-    REP(i, 0, k){
-        if(!check[i]){
-            map<char,int> mp;
-            int mx = 0, cnt = 0; 
-            for(int j = i; j < n; j+=k){
-                // bug(j, s[j]);
-                mp[s[j]]++;
-                mx = max(mx, mp[s[j]]);
-                cnt++; check[j] = 1;
-            }
-            // bug(i, n-i-1);
-            if(!check[n-i-1]){
-                for(int j = n-i-1; j >= 0; j-= k){
-                    // bug(j, s[j]);
-                    mp[s[j]]++;
-                    mx = max(mx, mp[s[j]]);
-                    cnt++;check[j] = 1;
-                }
-            }
-            ans += cnt - mx;
-            // break;
+//*********************************************************************************//
+struct item{
+    int p;
+};
 
-        }
+struct SegmentTree{
+    int sz;
+    vector<item> tree;
+    item N = {0};
 
+    item single(int a){
+        return {a};
+    }
+
+    item combineSegments(item a, item b){
+        return {a.p+b.p};
     }
     
-    println(ans);
+
+    SegmentTree(int* arr, int n){
+        sz = 1;
+        while(sz < n) sz <<= 1;
+        tree.resize(2*sz-1);
+        build(0, 0, sz, arr, n);
+    }
+
+    void build(int x, int lx, int rx, int* arr, int n){
+        if(rx-lx == 1){
+            if(lx < n) tree[x] = single(arr[lx]);
+            return;
+        }
+        int m = (lx + rx)/2;
+        build(2*x+1, lx, m, arr, n);
+        build(2*x+2, m, rx, arr, n);
+        
+        tree[x] = combineSegments(tree[2*x+1] , tree[2*x+2]);
+    }
+
+    void set(int x, int lx, int rx, int val, int ind){
+        if(rx-lx == 1){
+            tree[x] = single(val);
+            return;
+        }
+        int m = (lx + rx)/2;
+        if(ind < m) set(2*x+1, lx, m, val, ind);
+        else set(2*x+2, m, rx, val, ind);
+        
+        tree[x] = combineSegments(tree[2*x+1] , tree[2*x+2]);
+    }
+
+    void set(int val, int ind){
+        set(0, 0, sz, val, ind);
+    }
+
+    item calc(int x, int lx, int rx, int l, int r){
+        if(lx >= r || rx <= l) return N;
+        if(lx >= l && rx <= r) return tree[x];
+        int m = (lx+rx)/2;
+        item left = calc(2*x+1, lx, m, l, r), right = calc(2*x+2, m, rx, l, r);
+        return  combineSegments(left , right);
+    }
+
+    item calc(int l, int r){
+        return calc(0, 0, sz, l, r);
+    }
+
+};
+
+//*********************************************************************************//
+
+void solve(){
+    int n, m, v; cin >> n >> m;
+    int arr[n]; REP(x, 0, n) cin >> arr[x];
+    SegmentTree st(arr, n);
+    while(m--){
+        int ch, a, b;
+        cin >> ch >> a >> b;
+        if(ch == 1) st.set(b, a);
+        else println(st.calc(a, b).p);
+    }
+    
 }
 
 int32_t main()
@@ -103,7 +159,7 @@ int32_t main()
     ITAACHI UCHIHA
 
     int _ = 1;
-    cin >> _;
+    //cin >> _;
     while (_--) solve();
     return 0;
 }

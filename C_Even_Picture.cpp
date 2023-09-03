@@ -50,10 +50,17 @@ void __print(const pair<T, V> &x) {cerr << '{'; __print(x.first); cerr << ", "; 
 template<typename T>
 void __print(const T &x) {int f = 0; cerr << '{'; for (auto &i: x) cerr << (f++ ? ", " : ""), __print(i); cerr << '}';}
 void _print() {cerr << "]\n";}
+void _print(int* a, int n){REP(x, 0, n) cerr << a[x] << " \n"[x==n-1];}
 template <typename T, typename... V>
 void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v...);}
+void no(){println("NO");}
+void yes(){println("YES");}
 int gcd(int a, int b){return (b == 0) ? a : gcd(b, a%b); }
 int lcm(int a, int b){return a * (b/gcd(a,b)); }
+int sum(vi &a){int sm = 0;for(int i : a) sm += i;return sm;}
+ld average(vi &a){ld avg = sum(a);return avg/a.size();}
+int sum(int* a, int n){int sm = 0;REP(i, 0, n) sm += a[i];return sm;}
+ld average(int* a, int n){ld avg = sum(a, n);return avg/n;}
 
 template <typename Arg1>
 void __f (const char* name, Arg1&& arg1) { cerr << name << " : " << arg1 << '\n'; }
@@ -63,38 +70,33 @@ void __f (const char* names, Arg1&& arg1, Args&&... args){
     cerr.write (names, comma - names) << " : " << arg1 << " | "; __f (comma + 1, args...);
 } 
 
+void pt(int i , int j){
+    cout << i << " " << j << "\n";
+}
+
+void pt(int i , int j, int k){
+    cout << i << " " << j << " " << k <<  "\n";
+}
+
 void solve(){
-    string s;
-    int n, k, ans = 0;
-    cin >> n >> k >> s;
-    bool check[n]{0};
-    REP(i, 0, k){
-        if(!check[i]){
-            map<char,int> mp;
-            int mx = 0, cnt = 0; 
-            for(int j = i; j < n; j+=k){
-                // bug(j, s[j]);
-                mp[s[j]]++;
-                mx = max(mx, mp[s[j]]);
-                cnt++; check[j] = 1;
-            }
-            // bug(i, n-i-1);
-            if(!check[n-i-1]){
-                for(int j = n-i-1; j >= 0; j-= k){
-                    // bug(j, s[j]);
-                    mp[s[j]]++;
-                    mx = max(mx, mp[s[j]]);
-                    cnt++;check[j] = 1;
-                }
-            }
-            ans += cnt - mx;
-            // break;
-
+    int n; cin >> n;
+    cout << 7 + (n-1) * 3 << '\n';
+    int j = 0;
+    REP(i, 0, n+2){
+        if(i == 0 ){
+            pt(i, j);
+            pt(i, j+1);
         }
-
+        else if(i == n+1){
+            pt(i, j-1);
+            pt(i, j);
+        }else {
+            pt(i, j-1);
+            pt(i, j);
+            pt(i, j+1);
+        }
+        j++;
     }
-    
-    println(ans);
 }
 
 int32_t main()
@@ -103,7 +105,7 @@ int32_t main()
     ITAACHI UCHIHA
 
     int _ = 1;
-    cin >> _;
+    //cin >> _;
     while (_--) solve();
     return 0;
 }

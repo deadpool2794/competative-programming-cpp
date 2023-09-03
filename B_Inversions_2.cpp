@@ -69,30 +69,110 @@ void __f (const char* names, Arg1&& arg1, Args&&... args){
     const char* comma = strchr (names + 1, ',');
     cerr.write (names, comma - names) << " : " << arg1 << " | "; __f (comma + 1, args...);
 } 
+struct item{
+    // elements in node
+    int p;
+};
 
-const int N = 1e5+10;
-int n;
-string s;
+struct SegmentTree{
+    int sz;
+    vector<item> tree;
+    item N = {0};// Neutral Element;
+    
+    item node(int val){
+        // structure of a node in tree
+        return {val};
+    }
+
+    item combineSegments(item a, item b){
+        // criteria to combine segments 
+        return {a.p+b.p};
+    }
+
+    SegmentTree(int n){
+        sz = 1;
+        while(sz < n) sz <<= 1;
+        tree.resize(2*sz-1);
+        int arr[sz]{0};
+        fill(arr, arr+n, 1);
+        build(0, 0, sz, arr, sz);
+    }
+
+    void build(int x, int lx, int rx, int* arr, int n){
+        if(rx-lx == 1){
+            if(lx < n) tree[x] = node(arr[lx]); /*-----------*/
+            return;
+        }
+        int m = (lx + rx)/2;
+
+        build(2*x+1, lx, m, arr, n);
+        build(2*x+2, m, rx, arr, n);
+
+        tree[x] = combineSegments(tree[2*x+1] , tree[2*x+2]);
+    }
+
+    void set(int x, int lx, int rx, int val, int ind){
+        if(rx-lx == 1){
+            tree[x] = node(val); /*-----------*/
+            return;
+        }
+        int m = (lx + rx)/2;
+        if(ind < m) set(2*x+1, lx, m, val, ind);
+        else set(2*x+2, m, rx, val, ind);
+        
+        tree[x] = combineSegments(tree[2*x+1] , tree[2*x+2]);
+    }
+
+    void set(int val, int ind){
+        set(0, 0, sz, val, ind);
+    }
+
+    item calc(int x, int lx, int rx, int l, int r){
+        if(lx >= r || rx <= l) return N;
+        if(lx >= l && rx <= r) return tree[x];
+        int m = (lx+rx)/2;
+        item left = calc(2*x+1, lx, m, l, r), right = calc(2*x+2, m, rx, l, r);
+        return  combineSegments(left , right);
+    }
+
+    item calc(int l, int r){
+        return calc(0, 0, sz, l, r);
+    }
+
+    item find(int x, int lx, int rx, int k){
+        if(tree[x].p <= k) return {-1};
+        if(rx-lx == 1) return {lx};
+        int m = (lx+rx)/2;
+        item res = find(2*x+2 , m, rx, k);
+        if(res.p == -1) res = find(2*x+1, lx, m, k-tree[2*x+2].p);
+        return res;
+    }
+
+    item find(int k){
+        return find(0, 0, sz, k);
+    }
+
+    void print(){
+        REP(i, 0, 2*sz-1) cout << tree[i].p << " \n"[i == 2*sz-2];
+    }
 
 
+
+};
 
 void solve(){
-    cin >> n >> s;
-    int cur4 = 0, curs = 0, cur0 = 0, tot4 = 0, tots = 0, tot0 = 0;
-    for(auto i : s) tot4 += (i == '4'), tots += (i == '*'), tot0 += (i == '0');
-    // bug(tot4, tot0, tots);
-    int ans = 0;
-    REP(i, 0, n){
-        if(s[i] == '0') ans += (cur4+curs) * ((tot4-cur4)+(tots-curs));
-        if(s[i] == '*') ans += (cur4+curs) * ((tot4-cur4)+(tots-curs-1));
-        ans %= M1;
-
-        cur4 += (s[i] == '4'), curs += (s[i] == '*'), cur0 += (s[i] == '0');
+    int n; cin >> n;
+    int arr[n]; REP(x, 0, n) cin >> arr[x];
+    SegmentTree st(n);
+    int ans[n];
+    int temp = n;
+    // st.print();
+    while(temp--){
+        // bug(temp, st.find(arr[temp]).p);
+        ans[temp] = st.find(arr[temp]).p;
+        st.set(0, ans[temp]);
     }
-    println(ans);
-
-
-    
+    REP(i, 0, n) cout << ans[i] << " \n"[i == n-1];
 }
 
 int32_t main()
@@ -101,7 +181,7 @@ int32_t main()
     ITAACHI UCHIHA
 
     int _ = 1;
-    cin >> _;
+    //cin >> _;
     while (_--) solve();
     return 0;
 }

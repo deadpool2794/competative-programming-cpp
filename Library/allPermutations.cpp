@@ -64,13 +64,15 @@ void __f (const char* names, Arg1&& arg1, Args&&... args){
     cerr.write (names, comma - names) << " : " << arg1 << " | "; __f (comma + 1, args...);
 } 
 
+
 //*********************************************************************************//
 
 
 int n;
-vector<vector<int>> allPerms;
+vvi allPerms;
+set<int> res;
 
-void allPermutations(int ind, vector<int> &arr){
+void allPermutations(int ind, vi &arr){
     if(ind == n-1){ // int n -> size(arr) -> initialized globally
         allPerms.pb(arr); // vvi allPerms -> to store perms -> must be initialized globally
         return;
@@ -97,6 +99,7 @@ void solve(){
     vi arr(n);
     REP(x, 0, n) cin >> arr[x];
     allPermutations(0, arr);
+    
     for(auto i : allPerms)_print(i);
     
     

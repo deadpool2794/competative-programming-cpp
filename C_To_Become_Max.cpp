@@ -50,10 +50,17 @@ void __print(const pair<T, V> &x) {cerr << '{'; __print(x.first); cerr << ", "; 
 template<typename T>
 void __print(const T &x) {int f = 0; cerr << '{'; for (auto &i: x) cerr << (f++ ? ", " : ""), __print(i); cerr << '}';}
 void _print() {cerr << "]\n";}
+void _print(int* a, int n){REP(x, 0, n) cerr << a[x] << " \n"[x==n-1];}
 template <typename T, typename... V>
 void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v...);}
+void no(){println("NO");}
+void yes(){println("YES");}
 int gcd(int a, int b){return (b == 0) ? a : gcd(b, a%b); }
 int lcm(int a, int b){return a * (b/gcd(a,b)); }
+int sum(vi &a){int sm = 0;for(int i : a) sm += i;return sm;}
+ld average(vi &a){ld avg = sum(a);return avg/a.size();}
+int sum(int* a, int n){int sm = 0;REP(i, 0, n) sm += a[i];return sm;}
+ld average(int* a, int n){ld avg = sum(a, n);return avg/n;}
 
 template <typename Arg1>
 void __f (const char* name, Arg1&& arg1) { cerr << name << " : " << arg1 << '\n'; }
@@ -63,38 +70,59 @@ void __f (const char* names, Arg1&& arg1, Args&&... args){
     cerr.write (names, comma - names) << " : " << arg1 << " | "; __f (comma + 1, args...);
 } 
 
-void solve(){
-    string s;
-    int n, k, ans = 0;
-    cin >> n >> k >> s;
-    bool check[n]{0};
-    REP(i, 0, k){
-        if(!check[i]){
-            map<char,int> mp;
-            int mx = 0, cnt = 0; 
-            for(int j = i; j < n; j+=k){
-                // bug(j, s[j]);
-                mp[s[j]]++;
-                mx = max(mx, mp[s[j]]);
-                cnt++; check[j] = 1;
-            }
-            // bug(i, n-i-1);
-            if(!check[n-i-1]){
-                for(int j = n-i-1; j >= 0; j-= k){
-                    // bug(j, s[j]);
-                    mp[s[j]]++;
-                    mx = max(mx, mp[s[j]]);
-                    cnt++;check[j] = 1;
-                }
-            }
-            ans += cnt - mx;
-            // break;
+const int N = 1100;
+int n, k, arr[N];
 
+bool make(int i, int m){
+    int ops = 0;
+    REP(j, i, n){
+        int more = m - arr[j];
+        bug(j, more, arr[j], ops, m);
+        if(more < 1) return ops <= k;
+        ops += more;
+        m--;
+    }
+    return ops <= k;
+}
+
+bool check(int m){
+    REP(i, 0, n){
+        int need = m, ops = 0;
+        REP(j, i, n){
+            int more = need-arr[j];
+            if(more < 1){
+                if(ops <= k) return 1;
+                else break;
+            }
+            ops += need-arr[j];
+            need--;
+            need = max(need, 1LL);
         }
+        // res |= make(i, m);
+        // if(res) break;
 
     }
+
+    return 0;
+}
+
+void solve(){
+    cin >> n >> k;
+    REP(x, 0, n) cin >> arr[x];
+    int mx = *max_element(arr, arr+n);
+    int lo = mx, hi = mx + k;
+    while(hi - lo > 1){
+        int m = (lo+hi)/2;
+        bool cur = check(m);
+        // bug(lo, hi, m, cur);
+        if(cur) lo = m;
+        else hi = m;
+    }
+
+    // bug(check(5));
+
+    println(lo);
     
-    println(ans);
 }
 
 int32_t main()

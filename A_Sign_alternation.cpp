@@ -70,28 +70,117 @@ void __f (const char* names, Arg1&& arg1, Args&&... args){
     cerr.write (names, comma - names) << " : " << arg1 << " | "; __f (comma + 1, args...);
 } 
 
-const int N = 1e5+10;
-int n;
-string s;
+struct item{
+    // elements in node
+    int p;
+};
 
+struct SegmentTree{
+    int sz;
+    vector<item> tree;
+int left(int x){
+    return 2*x+1;
+    }
 
+int right(int x){
+    return 2*x+2;
+    }
+
+    item N = {0}; // Neutral Element;
+    
+    item node(int val){
+        // structure of a node in tree
+        return {val};
+    }
+
+    item combineSegments(item a, item b){
+        // criteria to combine segments 
+        return {a.p+b.p};
+    }
+
+    SegmentTree(int* arr, int n){
+        sz = 1;
+        while(sz < n) sz <<= 1;
+        tree.resize(2*sz-1);
+        build(0, 0, sz, arr, n);
+    }
+
+    void build(int x, int lx, int rx, int* arr, int n){
+        if(rx-lx == 1){
+            if(lx < n) tree[x] = node(arr[lx]); /*-----------*/
+            return;
+        }
+        int m = (lx + rx)/2;
+
+        build(2*x+1, lx, m, arr, n);
+        build(2*x+2, m, rx, arr, n);
+
+        tree[x] = combineSegments(tree[2*x+1] , tree[2*x+2]);
+    }
+
+    void set(int x, int lx, int rx, int val, int ind){
+        if(rx-lx == 1){
+            tree[x] = node(val); /*-----------*/
+            return;
+        }
+        int m = (lx + rx)/2;
+        if(ind < m) set(2*x+1, lx, m, val, ind);
+        else set(2*x+2, m, rx, val, ind);
+        
+        tree[x] = combineSegments(tree[2*x+1] , tree[2*x+2]);
+    }
+
+    void set(int val, int ind){
+        set(0, 0, sz, val, ind);
+    }
+
+    item calc(int x, int lx, int rx, int l, int r){
+        if(lx >= r || rx <= l) return N;
+        if(lx >= l && rx <= r) return tree[x];
+        int m = (lx+rx)/2;
+        item left = calc(2*x+1, lx, m, l, r), right = calc(2*x+2, m, rx, l, r);
+        return  combineSegments(left , right);
+    }
+
+    item calc(int l, int r){
+        return calc(0, 0, sz, l, r);
+    }
+
+    bool lineBreak(int i){
+        return __builtin_popcountll(i+2) == 1;
+    }
+
+    void print(){
+        REP(i, 0, 2*sz-1) cerr << tree[i].p << " \n"[lineBreak(i)];
+    }
+
+};
 
 void solve(){
-    cin >> n >> s;
-    int cur4 = 0, curs = 0, cur0 = 0, tot4 = 0, tots = 0, tot0 = 0;
-    for(auto i : s) tot4 += (i == '4'), tots += (i == '*'), tot0 += (i == '0');
-    // bug(tot4, tot0, tots);
-    int ans = 0;
-    REP(i, 0, n){
-        if(s[i] == '0') ans += (cur4+curs) * ((tot4-cur4)+(tots-curs));
-        if(s[i] == '*') ans += (cur4+curs) * ((tot4-cur4)+(tots-curs-1));
-        ans %= M1;
+    int n; cin >> n;
+    int odd[n]{0}, even[n]{0};
+    int arr[n]; REP(i, 0, n) cin >> arr[i], i&1 ? odd[i]= arr[i] : even[i] = arr[i];
 
-        cur4 += (s[i] == '4'), curs += (s[i] == '*'), cur0 += (s[i] == '0');
+    SegmentTree oddst(odd, n), evenst(even, n); 
+    // oddst.print();
+    // evenst.print();
+
+    int m; cin >> m;
+    while(m--){
+        int ch, a, b; cin >> ch >> a >> b;
+        if(!ch){
+            if(!(a&1)) oddst.set(b, a-1);
+            else evenst.set(b, a-1);
+            // oddst.print();
+            // evenst.print();
+        }else{
+            int s1, s2;
+            s1 = oddst.calc(a-1, b).p;
+            s2 = evenst.calc(a-1, b).p;
+            if(!(a&1)) println(s1-s2);
+            else println(s2-s1);
+        }
     }
-    println(ans);
-
-
     
 }
 
@@ -101,7 +190,7 @@ int32_t main()
     ITAACHI UCHIHA
 
     int _ = 1;
-    cin >> _;
+    //cin >> _;
     while (_--) solve();
     return 0;
 }

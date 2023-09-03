@@ -70,29 +70,112 @@ void __f (const char* names, Arg1&& arg1, Args&&... args){
     cerr.write (names, comma - names) << " : " << arg1 << " | "; __f (comma + 1, args...);
 } 
 
-const int N = 1e5+10;
-int n;
-string s;
+struct item{
+    // elements in node
+    int p;
+};
 
-
-
-void solve(){
-    cin >> n >> s;
-    int cur4 = 0, curs = 0, cur0 = 0, tot4 = 0, tots = 0, tot0 = 0;
-    for(auto i : s) tot4 += (i == '4'), tots += (i == '*'), tot0 += (i == '0');
-    // bug(tot4, tot0, tots);
-    int ans = 0;
-    REP(i, 0, n){
-        if(s[i] == '0') ans += (cur4+curs) * ((tot4-cur4)+(tots-curs));
-        if(s[i] == '*') ans += (cur4+curs) * ((tot4-cur4)+(tots-curs-1));
-        ans %= M1;
-
-        cur4 += (s[i] == '4'), curs += (s[i] == '*'), cur0 += (s[i] == '0');
-    }
-    println(ans);
-
-
+struct SegmentTree{
+    int sz;
+    vector<item> tree;
+    item N = node(0);// Neutral Element;
     
+    item node(int val){
+        // structure of a node in tree
+        return {val};
+    }
+
+    item combineSegments(item a, item b){
+        // criteria to combine segments 
+        return {a.p+b.p};
+    }
+
+    SegmentTree(int n){
+        sz = 1;
+        while(sz < n) sz <<= 1;
+        tree.assign(2*sz+2, {0});
+        // build(0, 0, sz, arr, n);
+    }
+
+    void build(int x, int lx, int rx, int* arr, int n){
+        if(rx-lx == 1){
+            if(lx < n) tree[x] = node(arr[lx]); /*-----------*/
+            return;
+        }
+        int m = (lx + rx)/2;
+
+        build(2*x+1, lx, m, arr, n);
+        build(2*x+2, m, rx, arr, n);
+
+        tree[x] = combineSegments(tree[2*x+1] , tree[2*x+2]);
+    }
+
+    void set(int x, int lx, int rx, int val, int ind){
+        if(rx-lx == 1){
+            tree[x] = node(val); /*-----------*/
+            return;
+        }
+        int m = (lx + rx)/2;
+        if(ind < m) set(2*x+1, lx, m, val, ind);
+        else set(2*x+2, m, rx, val, ind);
+        
+        tree[x] = combineSegments(tree[2*x+1] , tree[2*x+2]);
+    }
+
+    void set(int val, int ind){
+        set(0, 0, sz, val, ind);
+    }
+
+    item calc(int x, int lx, int rx, int l, int r){
+        if(lx >= r || rx <= l) return N;
+        if(lx >= l && rx <= r) return tree[x];
+        int m = (lx+rx)/2;
+        item left = calc(2*x+1, lx, m, l, r), right = calc(2*x+2, m, rx, l, r);
+        return  combineSegments(left , right);
+    }
+
+    item calc(int l, int r){
+        return calc(0, 0, sz, l, r);
+    }
+
+    bool breaker(int i){
+        return __builtin_popcountll(i+2) == 1;
+    }
+
+    void print(){
+        REP(i, 0, 2*sz-1) cerr << tree[i].p << " \n"[breaker(i)];
+    }
+
+};
+
+
+vi solve(int* arr, int n){
+    map<int, int> mp;
+    SegmentTree st(2*n);
+    vi ans(n+1, 0);
+    // st.print();
+    REP(i, 1, 2*n+1){
+        if(mp.find(arr[i]) == mp.end()) mp[arr[i]] = i, st.set(1, i-1);
+        else {
+            int res = st.calc(mp[arr[i]],i).p;
+            ans[arr[i]] = res;
+            st.set(0, mp[arr[i]]-1);
+            // bug(mp[arr[i]], i, res, arr[i], ans[arr[i]]);
+        }
+    }
+
+    return ans;
+
+}
+void solve_(){
+    int n; cin >> n;
+    int arr[2*n+1]; REP(x, 1, 2*n+1) cin >> arr[x];
+    vi ans , ans2;
+    ans = solve(arr, n);
+    reverse(arr+1, arr+2*n+1);
+    ans2 = solve(arr, n);
+    REP(i, 1, n+1) cout << ans[i]+ans2[i] << " \n"[i==n];
+
 }
 
 int32_t main()
@@ -101,7 +184,7 @@ int32_t main()
     ITAACHI UCHIHA
 
     int _ = 1;
-    cin >> _;
-    while (_--) solve();
+    // cin >> _;
+    while (_--) solve_();
     return 0;
 }
