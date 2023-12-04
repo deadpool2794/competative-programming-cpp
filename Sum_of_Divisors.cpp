@@ -15,7 +15,7 @@ int main(){
         if (n%i == 0){
             sum += i;
         }
-        cout<<sum;
+        cout<<sum << " ";
     }
     return 0;
 }
